@@ -1,0 +1,66 @@
+app:
+  name: Mac 目录智能分析与研究 Agent
+  default_mode: hybrid
+
+execution:
+  supported_modes:
+    - react
+    - lcel
+    - hybrid
+
+model:
+  provider: tongyi
+  name: qwen-turbo
+  temperature: 0
+
+directory_scan:
+  # 仅允许分析这些根目录下的路径，需要时可增加。
+  allowed_roots:
+    - ~/Desktop
+  reject_exact_paths:
+    - "/"
+    - "~"
+  max_depth: 12
+  max_files: 200000
+  timeout_seconds: 30
+  include_hidden: false
+  cache_seconds: 60
+  recent_days: 30
+  stale_days: 365
+  large_file_mb: 500
+  max_hash_file_mb: 1024
+
+search:
+  strategy: sequential
+  max_results: 5
+  min_results: 3
+  providers:
+    - name: serpapi
+      enabled: true
+      api_key_env: SERPAPI_API_KEY
+      timeout_seconds: 8
+    - name: tavily
+      enabled: true
+      api_key_env: TAVILY_API_KEY
+      timeout_seconds: 8
+    - name: duckduckgo
+      enabled: true
+      timeout_seconds: 8
+
+system_health:
+  command_timeout_seconds: 3
+
+report:
+  mask_absolute_paths: true
+
+logging:
+  level: INFO
+
+tracing:
+  enabled: true
+  # 所有任务追加写入这一个 JSONL 文件。
+  file: logs/execution_trace.jsonl
+  # sanitized 保留脱敏后输入输出；none 仅记录事件与耗时。
+  payload_mode: sanitized
+  max_payload_chars: 12000
+  max_collection_items: 100

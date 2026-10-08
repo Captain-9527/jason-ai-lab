@@ -29,6 +29,7 @@
 | Chatbot | 基础对话应用 | 计划中 |
 | RAG Demo | 本地知识库问答 | 计划中 |
 | Agent Demo | 工具调用智能体 | 计划中 |
+| [LangChain Jason](projects/langchain-jason/) | LCEL、ReAct 与混合路由的只读 macOS 目录分析 Agent | 已完成 |
 
 ## 使用约定
 
@@ -36,4 +37,3 @@
 - 每个项目应包含独立的 README、依赖说明和运行方法。
 - API Key、令牌、账号信息、私有数据及模型权重不得提交到仓库。
 - 环境变量通过 `.env` 管理，并提供不含敏感值的 `.env.example`。
-

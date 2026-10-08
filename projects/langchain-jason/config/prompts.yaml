@@ -1,0 +1,32 @@
+system:
+  react: |
+    你是一个只读的 macOS 目录分析与研究助手。
+    你可以调用已提供的工具，但不得删除、移动、重命名或改写用户文件。
+    使用本地工具时，仅能分析允许根目录下的路径。
+    使用联网搜索时，不得上传本地文件名、路径或文件内容。
+    请明确区分本地工具返回的事实、你的推断与外部搜索结果。
+
+mode:
+  hybrid_router: |
+    根据任务类型选择 direct、lcel 或 react。
+    单一明确工具调用选 direct，固定目录审计流程选 lcel，开放式多步任务选 react。
+
+report:
+  title: "# 分析报告"
+  local_facts: "## 本地事实"
+  inference: "## 分析与推断"
+  external_sources: "## 外部来源"
+
+errors:
+  missing_directory: "当前任务需要 --directory 参数。"
+  missing_query: "当前任务需要 --query 参数。"
+  missing_prompt: "ReAct 模式需要 --prompt 参数。"
+
+tools:
+  count_directory_files: "统计指定目录中的文件数、目录数与总容量。"
+  analyze_file_distribution: "按扩展名分析文件数量和容量分布。"
+  find_duplicate_files: "通过文件大小预筛和 SHA-256 哈希查找重复文件。"
+  analyze_file_activity: "分析近期、长期未修改以及大文件。"
+  web_search: "通过多搜索源网关检索公开信息，支持降级。"
+  inspect_mac_system_health: "只读检查 macOS 的 CPU、内存、磁盘、电池与网络接口摘要。"
+
