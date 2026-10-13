@@ -35,7 +35,7 @@
 | 项目 | 简介 | 状态 |
 | --- | --- | --- |
 | [LangChain Jason](projects/langchain-jason/) | LCEL、ReAct 与混合路由的只读 macOS 目录分析 Agent | 已完成 |
-| [RAG Jason](projects/rag-jason/) | PDF 解析、混合检索、重排与结构化问答 | 学习演示 |
+| [RAG Jason](projects/rag-jason/) | PDF 解析、混合检索、重排与结构化问答 | 已完成 |
 
 ## 使用约定
 
