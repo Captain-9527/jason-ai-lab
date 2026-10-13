@@ -36,6 +36,7 @@
 | --- | --- | --- |
 | [LangChain Jason](projects/langchain-jason/) | LCEL、ReAct 与混合路由的只读 macOS 目录分析 Agent | 已完成 |
 | [RAG Jason](projects/rag-jason/) | PDF 解析、混合检索、重排与结构化问答 | 已完成 |
+| [Vanna Jason](projects/vanna-jason/) | Text-to-SQL、营销数据分析与 MCP 问答，附训练快照和模拟数据 | 已整理，待端到端验证 |
 
 ## 使用约定
 

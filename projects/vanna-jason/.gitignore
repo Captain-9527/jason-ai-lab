@@ -1,0 +1,4 @@
+/chroma_db/
+/workspace/
+*.log
+!examples/chroma_db/**/*.bin

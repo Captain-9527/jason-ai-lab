@@ -1,0 +1,26 @@
+# BC白酒营销助手 — Vanna + MCP 版依赖
+# 安装：pip install -r requirements.txt
+
+# Vanna 核心（含 Flask UI / ChromaDB / OpenAI SDK）
+vanna[chromadb,openai]==0.7.9
+chromadb==0.6.3
+sqlparse>=0.5.3,<0.6
+
+# MySQL 驱动（SQLAlchemy QueuePool，pool_pre_ping 自动重连）
+pymysql>=1.1.0
+sqlalchemy>=2.0.0
+
+# 环境变量加载
+python-dotenv>=1.0.0
+
+# 数据处理与可视化（vanna 已依赖，显式列出便于版本管理）
+pandas>=2.0.0
+plotly>=5.18.0
+
+# Gradio 统一 UI（替代 VannaFlaskApp，支持 MCP 状态展示）
+gradio==5.23.1
+
+# qwen-agent + MCP（双 MCP Server：高德地图 + Tavily 搜索）
+qwen-agent>=0.0.25
+mcp>=1.0.0
+dashscope>=1.0.0
