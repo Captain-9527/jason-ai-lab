@@ -1,0 +1,32 @@
+# 通用题意规则；不按题号、文件编号或专用业务主题猜答案。
+rules:
+  - category: visual
+    pattern: '颜色|红色|蓝色|绿色|黄色|底色|阴影|高亮|色块|区域'
+    exclude: '(主表|主区域).*标题'
+    strategy: direct
+  - category: metadata
+    pattern: '语言|标题|最左.*表头|最右.*表头|列数|多少列|几列|页码|是否.*(含|有|存在).*列'
+    strategy: direct
+  - category: field_list
+    pattern: '按.*顺序.*列出|列出以下字段'
+    strategy: direct
+  - category: lookup
+    pattern: '提取.*对应的值|从.*提取'
+    exclude: '计算|求和|求差|求平均|筛选|排序|大于|小于|高于|低于|最高|最低|最多|最少'
+    strategy: direct
+  - category: enumeration
+    pattern: '哪些|有哪些|列出|各个分类|各分类|各个类别|各类别'
+    exclude: '最高|最低|最大|最小|最多|最少|筛选|大于|小于|高于|低于|排序|计算|平均|求和|总数|多少个|数量|符合|满足|条件'
+    strategy: direct
+  - category: filter
+    pattern: '最高|最低|最大|最小|最多|最少|哪些|有哪些|筛选|大于|小于|高于|低于|排序'
+    strategy: compare
+  - category: calculation
+    pattern: '合计|求和|总和|求差|差额|相差|比例|占比|增长率|百分点|计数|数量|总数|个数|多少个|多少项|几个|几项|几条|平均|计算'
+    strategy: compare
+  - category: lookup
+    pattern: '提取|对应的值|是多少|各是多少'
+    strategy: direct
+fallback:
+  category: other
+  strategy: direct

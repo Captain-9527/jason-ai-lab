@@ -1,0 +1,10 @@
+# 本地环境、验证中间文件与运行产物
+.codex-tmp/
+.venv/
+.env
+__pycache__/
+*.egg-info/
+/data/
+/cache/
+/outputs/
+*.log

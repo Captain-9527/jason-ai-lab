@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tianchi-table-qa"
+version = "0.1.0"
+description = "可追溯的天池复杂表格问答流水线"
+requires-python = ">=3.11"
+dependencies = [
+  "openai>=1.40,<3", "openpyxl>=3.1,<4", "PyYAML>=6,<7",
+  "Pillow>=10,<13", "PyMuPDF>=1.24,<2",
+  "opencv-python-headless>=4.8,<5", "numpy>=1.26,<3"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

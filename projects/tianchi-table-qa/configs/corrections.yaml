@@ -1,0 +1,8 @@
+# 原始文件不修改；仅启用 corrections_enabled / --accept-corrections 后使用。
+# 文件别名根据唯一候选推断，题型按题意推断，均需使用者确认。
+file_aliases:
+  58.pdf: 058.pdf
+  59.pdf: 059.pdf
+  0060.pdf: 060.pdf
+question_types:
+  "63": extract

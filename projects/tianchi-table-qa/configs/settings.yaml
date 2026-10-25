@@ -1,0 +1,101 @@
+paths:
+  # 相对项目根目录解析，而非终端当前目录。
+  questions: data/questions.xlsx
+  files: data/files
+  template: configs/submission-template.xlsx
+  cache: cache
+  outputs: outputs
+model:
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  vision: "qwen3.8-27b"  # 或使用 QWEN_VL_MODEL 环境变量
+  text: "qwen3.8-27b"    # 或使用 QWEN_TEXT_MODEL 环境变量
+  timeout: 120
+  retries: 2
+  requests_per_minute: 20
+  max_tokens: 8192
+  temperature: 0
+  # 只覆盖对应阶段；未配置 thinking 参数时保持服务端默认行为。
+  stages:
+    direct:
+      enable_thinking: false
+      json_object: true
+    repair:
+      enable_thinking: false
+      json_object: true
+    structured:
+      enable_thinking: false
+    locate:
+      enable_thinking: false
+    blocks:
+      enable_thinking: false
+    boundary:
+      enable_thinking: false
+    recognize:
+      timeout: 240
+      enable_thinking: false
+    # 验证模型能力后可按阶段启用：
+    # review:
+    #   enable_thinking: false
+    # direct:
+    #   enable_thinking: true
+    #   thinking_budget: 2048
+  bbox_format: norm999   # norm999 / norm1000 / pixel（上传图像素）/ resized_pixel
+  bbox_clip_tolerance: 0.01  # 仅允许各轴1%的轻微越界
+  bbox_resize:           # resized_pixel 才使用；必须核实与服务端参数一致
+    factor: 28
+    min_pixels: 3136
+    max_pixels: 1003520
+processing:
+  vector_grid_headers: true # 完整矢量网格提供几何；表头文字仍由模型读图，不使用损坏的PDF文字层
+  local_table_orientation: true # 混合方向PDF仅对匹配题意的侧放区域转正
+  focus_table_content: true # 确认单张完整三线表后排除正文/表外脚注；不新增模型调用
+  verify_pdf_evidence: true # 用文本层交叉检查数字框，不从其他位置猜答案
+  recognize_cell_format: array  # array 紧凑识别协议；object 可回退，内部结构不变
+  dpi: 180
+  max_pages: 100
+  max_pixels: 40000000
+  preprocess: true
+  deskew: true
+  pdf_auto_orient: true  # 仅高占比文本层判向；无文字/混合方向不猜测
+  orientation_min_chars: 50
+  orientation_min_ratio: 0.9
+  min_side: 1000
+  max_scale: 2.5
+  # 不采用“竖线多就旋转 90 度”的启发式，文字方向需计入 PDF 自带旋转。
+  crop_margin: 16
+  block_height: 1800
+  max_blocks: 20
+  max_tables_per_page: 20
+  local_zoom: 2
+answer:
+  numeric_locale: explicit # explicit按显式地区声明转换number；preserve保留旧导出，数组原文不转换
+  array_nulls: empty_string # 数组内null/字符串null输出为空字符串；整题null仍非法
+  array_numbers: preserve # preserve / number / string；单变量导出实验
+  language_names: preserve # preserve / zh；仅语言题规范名称
+  normalize_text_width: false # 文本保留原文全半角；true 恢复旧版转换
+  preserve_decimal_zeros: true
+  percent: preserve       # preserve / fraction / number（去百分号但不除100）
+  parentheses_negative: preserve  # preserve / convert
+run:
+  focus_ruled_pdf_tables: true # 正向PDF：仅唯一题注及多条对齐横线支持时聚焦，保留侧分组列
+  localize_pdf_evidence: true # 已聚焦简单三线表：用唯一行列交点修正证据，不修改答案
+  single_pass: true # 单路线求解+本地检查；禁止模型review与候选择优
+  program_assembly: true # 单一事实协议：程序组装结构/枚举/计算答案，不改历史响应
+  structure_target_policy: first # first仅首个目标表（多表口径已确认）；as_requested按题意多表组合
+  strategy: auto
+  workers: 2
+  max_model_calls: 3000     # 每次运行真实请求尝试上限，续跑累计
+  max_calls_per_question: 20
+  max_repairs: 1
+  review: false
+  review_policy: on_risk   # on_risk / always；review=false 关闭普通复核
+  min_review_confidence: 0.7
+  review_risk_policy: graded # graded 仅放行有依据的提示性风险；strict 阻断全部风险
+  submit_unlocalized: true # 无有效坐标的候选允许尽力提交，仍保持 uncertain
+  submit_uncertain: true  # 提交格式合法的选定候选；无坐标还需 submit_unlocalized
+  fill_missing_answers: true # Excel 非空优先；复用合法候选，最后用显式标记的类型占位值
+  retain_baseline_on_unverified_change: true # 新答案uncertain且改变旧success时保留旧候选；不视为本轮验证通过
+  allow_local_processing: false  # 确认竞赛许可或仅本地学习测试时再启用
+  corrections_enabled: false     # 审阅 corrections.yaml 后显式启用
+  trace_payloads: false          # 默认摘要；响应与结果另存 artifacts
+  refresh_model_cache: false     # 调试识别结果时可强制重新调用，不影响页面缓存
