@@ -37,7 +37,7 @@
 | [LangChain Jason](projects/langchain-jason/) | LCEL、ReAct 与混合路由的只读 macOS 目录分析 Agent | 已完成 |
 | [RAG Jason](projects/rag-jason/) | PDF 解析、混合检索、重排与结构化问答 | 已完成 |
 | [Vanna Jason](projects/vanna-jason/) | Text-to-SQL、营销数据分析与 MCP 问答，附训练快照和模拟数据 | 已完成 |
-| [天池表格问答](projects/tianchi-table-qa/) | 图片/PDF 复杂表格识别、事实校验与批量问答 | 已完成 |
+| [【阿里云 · 天池大赛】复杂表格识别与多模态问答](projects/tianchi-table-qa/) | 图片/PDF 复杂表格识别、事实校验与批量问答 | 已完成 |
 
 ## 使用约定
 
