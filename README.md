@@ -34,6 +34,7 @@
 
 | 项目 | 简介 | 状态 |
 | --- | --- | --- |
+| [Hermes Personal Assistant](projects/hermes-personal-assistant/) | 浏览器内容采集、SQLite 持久化与 HTTP MCP，支持 macOS 验证及 Windows 部署 | 原型验证中 |
 | [LangChain Jason](projects/langchain-jason/) | LCEL、ReAct 与混合路由的只读 macOS 目录分析 Agent | 已完成 |
 | [RAG Jason](projects/rag-jason/) | PDF 解析、混合检索、重排与结构化问答 | 已完成 |
 | [Vanna Jason](projects/vanna-jason/) | Text-to-SQL、营销数据分析与 MCP 问答，附训练快照和模拟数据 | 已完成 |
