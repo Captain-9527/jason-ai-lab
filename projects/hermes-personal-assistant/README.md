@@ -68,7 +68,7 @@ npm run smoke -- demo
 | get_integration_status | 状态和订阅；可选检测 Cookie，但不声称会话有效 |
 | manage_subscriptions | list/add/remove，uid 为数字字符串 |
 | start_login | 串行打开本机登录窗口 |
-| request_content_sync | 返回 job_id；同源执行中任务复用，浏览器串行采集 |
+| request_content_sync | 返回 job_id；相同参数的执行中任务复用，浏览器串行采集 |
 | get_sync_status | queued/running/succeeded/failed/interrupted |
 | list_content | 按 source 查询，默认 bilibili |
 | record_feedback | read/liked/disliked |
@@ -121,3 +121,8 @@ mcp_servers:
 - Windows 安装/常驻、目标 WSL Hermes 实际调用、飞书主动简报尚未执行。
 
 本机已关闭演示模式，测试订阅已移除。实际视频样例和演示数据保存在本机忽略目录，不进入 Git。
+
+
+### 2026-11-01 修正
+
+任务复用键包含平台、数量、规范化视频链接及订阅 UID 快照。不同视频或不同订阅范围分别排队，避免第二个请求被错误合并。数据库启动时从 v1 增量迁移到 v2，保留已有内容和任务。

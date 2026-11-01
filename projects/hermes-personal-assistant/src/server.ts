@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { resolve } from "node:path";
 import { McpServer } from "@modelcontextprotocol/server";
 import {
@@ -102,9 +102,22 @@ function mcpServer() {
           ...reply({ error: "NO_SUBSCRIPTIONS", message: "先添加 UP主 UID" }),
           isError: true,
         };
-      const active = store.active(source);
+      const requestKey = createHash("sha256")
+        .update(
+          JSON.stringify({
+            source,
+            limit,
+            video_url: video_url?.replace(/\/$/, "") ?? null,
+            uids:
+              video_url || source === "demo"
+                ? []
+                : subscriptions.map((s) => s.uid).sort(),
+          }),
+        )
+        .digest("hex");
+      const active = store.active(source, requestKey);
       if (active) return reply({ job_id: active.id, reused: true });
-      const id = store.createJob(source);
+      const id = store.createJob(source, requestKey);
       void serial(async () => {
         store.update(id, "running");
         try {

@@ -16,7 +16,19 @@ export class Store {
       .exec(`CREATE TABLE IF NOT EXISTS subscriptions (id TEXT PRIMARY KEY, uid TEXT UNIQUE NOT NULL);
       CREATE TABLE IF NOT EXISTS content (id TEXT PRIMARY KEY, title TEXT NOT NULL, url TEXT NOT NULL, author TEXT NOT NULL, source TEXT NOT NULL, fetched_at TEXT NOT NULL, feedback TEXT);
       CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY, source TEXT NOT NULL, status TEXT NOT NULL, created_at TEXT NOT NULL, finished_at TEXT, result TEXT, error TEXT);
-      PRAGMA user_version = 1;`);
+      `);
+    const version = this.db.pragma("user_version", { simple: true }) as number;
+    if (version > 2) {
+      this.db.close();
+      throw new Error("数据库版本高于当前程序，请使用匹配版本");
+    }
+    if (version < 2) {
+      this.db.transaction(() => {
+        this.db.exec(
+          "ALTER TABLE jobs ADD COLUMN request_key TEXT; PRAGMA user_version = 2;",
+        );
+      })();
+    }
     // 进程中断的任务显式失败，避免把未知结果伪装成成功。
     this.db
       .prepare(
@@ -65,13 +77,13 @@ export class Store {
       .prepare("UPDATE content SET feedback=? WHERE id=?")
       .run(value, id).changes;
   }
-  createJob(source: string) {
+  createJob(source: string, requestKey = source) {
     const id = randomUUID();
     this.db
       .prepare(
-        "INSERT INTO jobs (id,source,status,created_at) VALUES (?,?,'queued',?)",
+        "INSERT INTO jobs (id,source,status,created_at,request_key) VALUES (?,?,'queued',?,?)",
       )
-      .run(id, source, new Date().toISOString());
+      .run(id, source, new Date().toISOString(), requestKey);
     return id;
   }
   update(id: string, status: string, result?: unknown, error?: string) {
@@ -90,12 +102,12 @@ export class Store {
   job(id: string) {
     return this.db.prepare("SELECT * FROM jobs WHERE id=?").get(id);
   }
-  active(source: string) {
+  active(source: string, requestKey = source) {
     return this.db
       .prepare(
-        "SELECT id FROM jobs WHERE source=? AND status IN ('queued','running') LIMIT 1",
+        "SELECT id FROM jobs WHERE source=? AND request_key=? AND status IN ('queued','running') LIMIT 1",
       )
-      .get(source) as { id: string } | undefined;
+      .get(source, requestKey) as { id: string } | undefined;
   }
   close() {
     this.db.close();

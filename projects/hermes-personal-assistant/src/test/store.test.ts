@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import Database from "better-sqlite3";
 import { Store } from "../store.js";
 import { mkdirSync, mkdtempSync } from "node:fs";
 import { resolve } from "node:path";
@@ -33,5 +34,34 @@ test("重启将未完成任务标记 interrupted，保留内容", () => {
   s.close();
   s = new Store(path);
   assert.equal((s.job(id) as { status: string }).status, "interrupted");
+  s.close();
+});
+
+test("不同请求不会复用同源任务，已完成任务允许重新同步", () => {
+  const s = new Store(":memory:");
+  const first = s.createJob("bilibili", "video-a");
+  assert.equal(s.active("bilibili", "video-a")?.id, first);
+  assert.equal(s.active("bilibili", "video-b"), undefined);
+  const second = s.createJob("bilibili", "video-b");
+  assert.notEqual(first, second);
+  s.update(first, "succeeded", { collected: 1 });
+  assert.equal(s.active("bilibili", "video-a"), undefined);
+  assert.equal(s.active("bilibili", "video-b")?.id, second);
+  s.close();
+});
+
+test("v1 数据库增量迁移保留历史任务", () => {
+  mkdirSync(".codex-tmp", { recursive: true });
+  const path = resolve(mkdtempSync(".codex-tmp/migration-"), "test.sqlite");
+  const old = new Database(path);
+  old.exec(`CREATE TABLE jobs (id TEXT PRIMARY KEY, source TEXT NOT NULL, status TEXT NOT NULL, created_at TEXT NOT NULL, finished_at TEXT, result TEXT, error TEXT);
+    INSERT INTO jobs (id,source,status,created_at) VALUES ('history','bilibili','succeeded','2026-10-30');
+    PRAGMA user_version = 1;`);
+  old.close();
+  const s = new Store(path);
+  assert.equal(s.db.pragma("user_version", { simple: true }), 2);
+  assert.equal((s.job("history") as { status: string }).status, "succeeded");
+  const id = s.createJob("bilibili", "new-key");
+  assert.equal(s.active("bilibili", "new-key")?.id, id);
   s.close();
 });
